@@ -95,8 +95,9 @@ class ProductController extends Controller
     {
         if($method == 'asc') 
             return Product::all()->sortBy('price');
-        
-        else 
+        else if ($method == 'desc')
             return Product::all()->sortByDesc('price');
+        else 
+            return response()->json(['msg' => 'Bad method!', 'available' => ['desc', 'asc']], 400);
     }
 }
