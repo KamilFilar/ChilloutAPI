@@ -23,8 +23,8 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::get('/posts/search/{title}', [PostController::class, 'search']);
 
-Route::get('/products', [PostController::class, 'index']);
-Route::get('/products/{category}', [PostController::class, 'show']);
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{category}', [ProductController::class, 'show']);
 Route::get('/products/search/{name}', [ProductController::class, 'search']);
 Route::get('/products/sort/{method}', [ProductController::class, 'sort']);
 
@@ -37,9 +37,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
-    Route::post('/products', [PostController::class, 'store']);
-    Route::put('/products/{id}', [PostController::class, 'update']);
-    Route::delete('/products/{id}', [PostController::class, 'destroy']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
