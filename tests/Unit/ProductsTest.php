@@ -2,8 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
+use App\Models\Product;
 use Tests\TestCase;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ProductsTest extends TestCase
@@ -27,14 +28,17 @@ class ProductsTest extends TestCase
      */
     public function test_stores_new_product_with_headers()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
         ])->post('/api/products', [
-            'name' => 'Banana',
-            'category' => 'Fruit',
-            'description' => 'Lorem ipsum dolor sit',
-            'producer' => 'John',
-            'price' => '7.23',
+            'name' => $product->name,
+            'category' =>  $product->category,
+            'description' =>  $product->description,
+            'producer' =>  $product->producer,
+            'price' =>  $product->price
         ]);
 
         $response->assertStatus(201);
@@ -46,7 +50,9 @@ class ProductsTest extends TestCase
      */
     public function test_try_to_store_new_product_without_data()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
         ])->post('/api/products', [
             'name' => '',
@@ -65,14 +71,17 @@ class ProductsTest extends TestCase
      */
     public function test_update_product()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+        $id = Product::factory()->create()->id;
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
-        ])->put('/api/products/2', [
-            'name' => 'Raspberry',
-            'category' => 'Fruit',
-            'description' => 'Lorem ipsum',
-            'producer' => 'Frank',
-            'price' => '4.76',
+        ])->put('/api/products/'.$id, [
+            'name' => "TEST",
+            'category' => "TEST",
+            'description' => "TEST",
+            'producer' => "TEST",
+            'price' => "1.50",
         ]);
 
         $response->assertStatus(200);
@@ -85,7 +94,10 @@ class ProductsTest extends TestCase
      */
     public function test_remove_product()
     {
-        $response = $this->delete('/api/products/1');
+        $user = User::factory()->create();
+        $id = Product::factory()->create()->id;
+
+        $response = $this->actingAs($user)->delete('/api/products/'.$id);
 
         $response->assertStatus(200);
     }

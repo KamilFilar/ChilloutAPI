@@ -2,8 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
+use App\Models\Post;
 use Tests\TestCase;
-
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PostsTest extends TestCase
@@ -25,9 +26,11 @@ class PostsTest extends TestCase
      * Test: add new post with headers
      *
      */
-    public function test_stores_new_product_with_headers()
+    public function test_stores_new_post_with_headers()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
         ])->post('/api/posts', [
             'title' => 'Test title',
@@ -45,7 +48,9 @@ class PostsTest extends TestCase
      */
     public function test_try_to_store_new_post_without_data()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
         ])->post('/api/posts', [
             'title' => '',
@@ -63,9 +68,12 @@ class PostsTest extends TestCase
      */
     public function test_update_post()
     {
-        $response = $this->withHeaders([
+        $user = User::factory()->create();
+        $id = Post::factory()->create()->id;
+
+        $response = $this->actingAs($user)->withHeaders([
             'Accept' => 'application/json',
-        ])->put('/api/posts/2', [
+        ])->put('/api/posts/'.$id, [
             'title' => 'Test title',
             'description' => 'Lorem ipsum dolor sit',
             'content' => 'Test content',
@@ -82,7 +90,9 @@ class PostsTest extends TestCase
      */
     public function test_remove_post()
     {
-        $response = $this->delete('/api/posts/1');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->delete('/api/posts/1');
 
         $response->assertStatus(200);
     }
